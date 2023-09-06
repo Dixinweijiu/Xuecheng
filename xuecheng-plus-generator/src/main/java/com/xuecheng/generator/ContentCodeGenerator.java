@@ -26,12 +26,12 @@ public class ContentCodeGenerator {
     private static final String[] TABLE_NAMES = new String[]{
 //			"mq_message",
 //			"mq_message_history"
-//			 "course_base",
-//			 "course_market",
-//			 "teachplan",
-//			 "teachplan_media",
-//			 "course_teacher",
-//			"course_category"
+			 "course_base",
+			 "course_market",
+			 "teachplan",
+			 "teachplan_media",
+			 "course_teacher",
+			"course_category",
             "course_publish",
             "course_publish_pre"
 
@@ -51,7 +51,7 @@ public class ContentCodeGenerator {
         gc.setFileOverride(true);
         //生成路径
         gc.setOutputDir(System.getProperty("user.dir") + "/xuecheng-plus-generator/src/main/java");
-        gc.setAuthor("itcast");
+        gc.setAuthor("jxchen");
         gc.setOpen(false);
         gc.setSwagger2(false);
         gc.setServiceName("%sService");
@@ -67,7 +67,7 @@ public class ContentCodeGenerator {
         // 数据库配置
         DataSourceConfig dsc = new DataSourceConfig();
         dsc.setDbType(DbType.MYSQL);
-        dsc.setUrl("jdbc:mysql://192.168.101.65:3306/xc148_" + SERVICE_NAME
+        dsc.setUrl("jdbc:mysql://192.168.101.65:3306/xcplus_" + SERVICE_NAME
                 + "?serverTimezone=UTC&useUnicode=true&useSSL=false&characterEncoding=utf8");
 //		dsc.setDriverName("com.mysql.jdbc.Driver");
         dsc.setDriverName("com.mysql.cj.jdbc.Driver");
