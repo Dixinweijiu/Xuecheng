@@ -10,6 +10,7 @@ import com.xuecheng.content.mapper.CourseCategoryMapper;
 import com.xuecheng.content.mapper.CourseMarketMapper;
 import com.xuecheng.content.model.dto.AddCourseDto;
 import com.xuecheng.content.model.dto.CourseBaseInfoDto;
+import com.xuecheng.content.model.dto.EditCourseDto;
 import com.xuecheng.content.model.dto.QueryCourseParamsDto;
 import com.xuecheng.content.model.po.CourseBase;
 import com.xuecheng.content.model.po.CourseMarket;
@@ -133,8 +134,16 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         return courseBaseInfo;
     }
 
+
+
     //单独写一个方法查询课程信息
-    public CourseBaseInfoDto getCourseBaseInfo(long courseId) {
+    /**
+     * @param courseId 课程id
+     * @return 课程信息
+     * @description 根据课程id查询课程信息
+     */
+    @Override
+    public CourseBaseInfoDto getCourseBaseInfo(Long courseId) {
 
         //从课程信息表查询
         CourseBase courseBase = courseBaseMapper.selectById(courseId);
@@ -153,6 +162,51 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         courseBaseInfoDto.setMtName(mtName);
         courseBaseInfoDto.setStName(stName);
 
+
+        return courseBaseInfoDto;
+
+    }
+
+    /**
+     * @param companyId     机构id
+     * @param editCourseDto 修改课程模型类
+     * @return 课程信息
+     * @description 修改课程
+     */
+    @Override
+    public CourseBaseInfoDto updateCourseBase(Long companyId, EditCourseDto editCourseDto) {
+
+        //拿到课程id，查询课程信息
+        Long courseId = editCourseDto.getId();
+        CourseBase courseBase = courseBaseMapper.selectById(courseId);
+        if (courseBase == null) {
+            XueChengPlusException.cast("课程不存在");
+        }
+
+        //数据合法性校验
+        //本机构只能修改本机构的课程：companyId
+        if (!companyId.equals(courseBase.getCompanyId())) {
+            XueChengPlusException.cast("本机构只能修改自己旗下的课程");
+        }
+
+        //封装数据
+        BeanUtils.copyProperties(editCourseDto, courseBase);
+        //修改时间
+        courseBase.setChangeDate(LocalDateTime.now());
+
+        //更新数据库
+        int i = courseBaseMapper.updateById(courseBase);
+        if (i <= 0) {
+            XueChengPlusException.cast("修改课程失败");
+        }
+
+        //更新营销信息
+        CourseMarket courseMarket = new CourseMarket();
+        BeanUtils.copyProperties(editCourseDto, courseMarket);
+        saveCourseMarket(courseMarket);
+
+        //查询课程信息
+        CourseBaseInfoDto courseBaseInfoDto = getCourseBaseInfo(courseId);
 
         return courseBaseInfoDto;
 
