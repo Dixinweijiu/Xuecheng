@@ -64,3 +64,7 @@ Content-Type: application/json
   "grade": "204001",
   "description": ""
 }
+
+### 查询某个课程的课程计划
+GET {{content_host}}/content/teachplan/117/tree-nodes
+
