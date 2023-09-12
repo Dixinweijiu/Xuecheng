@@ -6,6 +6,7 @@ import com.xuecheng.content.service.TeachPlanService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +20,7 @@ import java.util.List;
  */
 
 @Api(value = "课程计划编辑接口",tags = "课程计划编辑接口")
+@Slf4j
 @RestController
 public class TeachPlanController {
 

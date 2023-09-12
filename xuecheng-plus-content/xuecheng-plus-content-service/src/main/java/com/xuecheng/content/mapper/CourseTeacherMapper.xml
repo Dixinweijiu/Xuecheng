@@ -18,4 +18,16 @@
         id, course_id, teacher_name, position, introduction, photograph, create_date
     </sql>
 
+    <select id="getTeacherInfoById" resultMap="BaseResultMap" parameterType="Long">
+        select *
+        from course_teacher t
+        where t.course_id = #{courseId}
+    </select>
+
+    <select id="getTeacherInfo" resultType="com.xuecheng.content.model.po.CourseTeacher">
+        select *
+        from course_teacher t
+        where course_id = #{courseId} and teacher_name = #{teacherName}
+    </select>
+
 </mapper>
