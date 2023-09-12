@@ -5,15 +5,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xuecheng.base.exception.XueChengPlusException;
 import com.xuecheng.base.model.PageParams;
 import com.xuecheng.base.model.PageResult;
-import com.xuecheng.content.mapper.CourseBaseMapper;
-import com.xuecheng.content.mapper.CourseCategoryMapper;
-import com.xuecheng.content.mapper.CourseMarketMapper;
+import com.xuecheng.content.mapper.*;
 import com.xuecheng.content.model.dto.AddCourseDto;
 import com.xuecheng.content.model.dto.CourseBaseInfoDto;
 import com.xuecheng.content.model.dto.EditCourseDto;
 import com.xuecheng.content.model.dto.QueryCourseParamsDto;
-import com.xuecheng.content.model.po.CourseBase;
-import com.xuecheng.content.model.po.CourseMarket;
+import com.xuecheng.content.model.po.*;
 import com.xuecheng.content.service.CourseBaseInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -43,6 +40,20 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
 
     @Autowired
     CourseCategoryMapper courseCategoryMapper;
+
+    @Autowired
+    CoursePublishMapper coursePublishMapper;
+
+    @Autowired
+    TeachplanMapper teachplanMapper;
+
+    @Autowired
+    TeachplanMediaMapper teachplanMediaMapper;
+
+    @Autowired
+    CourseTeacherMapper courseTeacherMapper;
+
+
 
     @Override
     public PageResult<CourseBase> queryCourseBaseList(PageParams pageParams, QueryCourseParamsDto queryCourseParamsDto) {
@@ -210,6 +221,44 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
 
         return courseBaseInfoDto;
 
+    }
+
+    @Override
+    public void deleteCourseBase(Long companyId, Long courseId) {
+        //合法性校验 机构id与审核状态
+        CourseBase courseBase = courseBaseMapper.selectById(courseId);
+        if (!companyId.equals(courseBase.getCompanyId())) {
+            XueChengPlusException.cast("本机构只能删除自己旗下的课程");
+        }
+
+        if (!courseBase.getAuditStatus().equals("202002")){
+            XueChengPlusException.cast("只有未提交的课程可以被删除");
+        }
+        //删除课程，同时删除课程相关的基本信息、营销信息、课程计划、课程教师信息。
+
+        //删除课程基本信息
+        courseBaseMapper.deleteById(courseId);
+
+        //删除课程营销信息
+        courseMarketMapper.deleteById(courseId);
+
+        //删除课程发布信息
+        coursePublishMapper.deleteById(courseId);
+
+        //删除课程计划
+        LambdaQueryWrapper<Teachplan> queryWrapperTeachPlan = new LambdaQueryWrapper<>();  //拼接查询条件
+        queryWrapperTeachPlan.eq(Teachplan::getCourseId, courseId);  //根据课程id精确查询
+        teachplanMapper.delete(queryWrapperTeachPlan);
+
+        //删除课程计划媒体资源
+        LambdaQueryWrapper<TeachplanMedia> queryWrapperTeachPlanMedia = new LambdaQueryWrapper<>();
+        queryWrapperTeachPlanMedia.eq(TeachplanMedia::getCourseId, courseId);
+        teachplanMediaMapper.delete(queryWrapperTeachPlanMedia);
+
+        //删除课程教师信息
+        LambdaQueryWrapper<CourseTeacher> queryWrapperCourseTeacher = new LambdaQueryWrapper<>();
+        queryWrapperCourseTeacher.eq(CourseTeacher::getCourseId, courseId);
+        courseTeacherMapper.delete(queryWrapperCourseTeacher);
     }
 
     //单独写一个方法保存课程营销信息
