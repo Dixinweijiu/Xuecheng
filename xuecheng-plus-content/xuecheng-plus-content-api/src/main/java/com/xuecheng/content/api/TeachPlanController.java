@@ -1,14 +1,13 @@
 package com.xuecheng.content.api;
 
+import com.xuecheng.content.model.dto.SaveTeachPlanDto;
 import com.xuecheng.content.model.dto.TeachPlanDto;
 import com.xuecheng.content.service.TeachPlanService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -33,5 +32,24 @@ public class TeachPlanController {
         List<TeachPlanDto> teachPlanTree = teachPlanService.findTeachPlanTree(courseId);
         return teachPlanTree;
     };
+
+
+    @ApiOperation("新增大章节、小章节，修改课程计划")
+    @PostMapping("/teachplan")
+    public void saveTeachPlan(@RequestBody SaveTeachPlanDto saveTeachPlanDto) {
+        teachPlanService.saveTeachPlan(saveTeachPlanDto);
+    }
+
+    @ApiOperation("删除章节")
+    @DeleteMapping("/teachplan/{teachPlanId}")
+    public void deleteTeachPlan(@PathVariable Long teachPlanId){
+        teachPlanService.deleteTeachPlan(teachPlanId);
+    }
+
+    @ApiOperation("上移")
+    @PostMapping("/teachplan/{movement}/{teachPlanId}")
+    public void moveTeachPlan(@PathVariable String movement, @PathVariable Long teachPlanId){
+        teachPlanService.moveTeachPlan(movement, teachPlanId);
+    }
 
 }

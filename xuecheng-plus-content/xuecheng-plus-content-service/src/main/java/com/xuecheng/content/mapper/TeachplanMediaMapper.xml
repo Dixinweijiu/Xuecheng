@@ -19,4 +19,10 @@
         id, media_id, teachplan_id, course_id, media_fileName, create_date, create_people, change_people
     </sql>
 
+    <select id="getIdByTeachPlanId" parameterType="long" resultType="Long">
+        select m.id
+        from teachplan_media m
+        where m.teachplan_id = #{teachPlanId}
+    </select>
+
 </mapper>

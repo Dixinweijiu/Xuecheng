@@ -90,11 +90,46 @@
             m.id teachplanMeidaId,
             m.media_id mediaId
         from teachplan one
-             inner join teachplan two on two.parentid = one.id
+             left join teachplan two on two.parentid = one.id
              left join teachplan_media m on m.teachplan_id = two.id
         where one.course_id = #{courseId} and one.parentid = 0
         order by one.orderby,
                  two.orderby
     </select>
+    
+    
+    <select id="selectMaxOrderBy" parameterType="long" resultType="int">
+        select max(t.orderby)
+        from teachplan t
+        where t.course_id = #{courseId} and t.parentid = #{parentId}
+    </select>
+
+
+    <select id="getChildrenNum" resultType="int" parameterType="long">
+        select count(*)
+        from teachplan one
+            inner join teachplan two on two.parentid = one.id
+        where one.id = #{teachPlanId}
+    </select>
+    
+    
+    <select id="getUpperTeachPlan" resultType="com.xuecheng.content.model.po.Teachplan" parameterType="long">
+        select two.*
+        from teachplan one
+        right join teachplan two on two.parentid = one.parentid
+        where two.orderby &lt; one.orderby and one.id = #{teachPlanId}
+        order by two.orderby desc
+        limit 1
+    </select>
+    
+    <select id="getLowerTeachPlan" resultType="com.xuecheng.content.model.po.Teachplan" parameterType="long">
+        select two.*
+        from teachplan one
+        right join teachplan two on two.parentid = one.parentid
+        where two.orderby &gt; one.orderby and one.id = #{teachPlanId}
+        order by two.orderby
+        limit 1
+    </select>
+    
 
 </mapper>
