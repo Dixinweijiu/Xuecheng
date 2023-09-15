@@ -67,6 +67,11 @@
 			<version>2.0.7</version>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+		</dependency>
+
 
 	</dependencies>
 </project>
