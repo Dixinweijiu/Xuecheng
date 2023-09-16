@@ -5,17 +5,17 @@ spring:
     nacos:
       server-addr: 192.168.101.65:8848
       discovery:
-        namespace: ${spring.profiles.active}
+        namespace: dev425
         group: xuecheng-plus-project
       config:
-        namespace: ${spring.profiles.active}
+        namespace: dev425
         group: xuecheng-plus-project
         file-extension: yaml
         refresh-enabled: true
-      shared-configs:
-        - data-id: logging-${spring.profiles.active}.yaml
-          group: xuecheng-plus-common
-          refresh: true
+        shared-configs:
+          - data-id: logging-${spring.profiles.active}.yaml
+            group: xuecheng-plus-common
+            refresh: true
 
 #profiles默认为dev
   profiles:
