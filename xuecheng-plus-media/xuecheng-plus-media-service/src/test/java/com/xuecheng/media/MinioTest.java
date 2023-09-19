@@ -10,6 +10,9 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.file.Files;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author jxchen
@@ -26,7 +29,7 @@ public class MinioTest {
 
     //上传文件
     @Test
-    public void upload(){
+    public void upload() {
         try {
             ContentInfo mimeTypeMatch = ContentInfoUtil.findMimeTypeMatch(".docx");
 
@@ -47,7 +50,7 @@ public class MinioTest {
 
     //删除文件
     @Test
-    public void delete(){
+    public void delete() {
         try {
             RemoveObjectArgs testbucket = RemoveObjectArgs.builder()
                     .bucket("testbucket")
@@ -77,7 +80,7 @@ public class MinioTest {
             String s2 = DigestUtils.md5Hex(Files.newInputStream(new File("E:\\temp\\时序数据论文\\近3年部分学界论文\\摘要.docx").toPath()));
             if (s1.equals(s2)) {
                 System.out.println("查询成功");
-            } else{
+            } else {
                 // inputStream因网络问题不稳定，导致md5不同
                 System.out.println("校验失败");
             }
@@ -86,5 +89,47 @@ public class MinioTest {
             System.out.println("查询失败");
         }
     }
+
+    @Test
+    public void uploadChunk() {
+        //路径
+        String chunkFolderPath = "D:\\Develop\\temp\\chunks\\";
+        File chunkFolder = new File(chunkFolderPath);
+        //获取分块文件
+        File[] files = chunkFolder.listFiles();
+        //循环上传
+        for (int i = 0; i < files.length; i++) {
+            try {
+                UploadObjectArgs uploadObjectArgs = UploadObjectArgs.builder()
+                        .bucket("testbucket")
+                        .object("chunk/" + i)
+                        .filename(files[i].getAbsolutePath())
+                        .build();
+                minioClient.uploadObject(uploadObjectArgs);
+                System.out.println("上传分块成功" + i);
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("上传分块失败" + i);
+            }
+        }
+    }
+
+    @Test
+    public void testMerge() throws Exception{
+        List<ComposeSource> sources = Stream.iterate(0, i -> ++i)
+                .limit(2)
+                .map(i -> ComposeSource.builder()
+                        .bucket("testbucket")
+                        .object("chunk/".concat(Integer.toString(i)))
+                        .build())
+                .collect(Collectors.toList());
+        ComposeObjectArgs composeObjectArgs = ComposeObjectArgs.builder()
+                .bucket("testbucket")
+                .object("merge01.mmp4")
+                .sources(sources)
+                .build();
+        minioClient.composeObject(composeObjectArgs);
+    }
+
 
 }
