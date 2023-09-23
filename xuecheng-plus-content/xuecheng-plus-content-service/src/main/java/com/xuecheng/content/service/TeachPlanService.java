@@ -1,7 +1,9 @@
 package com.xuecheng.content.service;
 
+import com.xuecheng.content.model.dto.BindTeachPlanMediaDto;
 import com.xuecheng.content.model.dto.SaveTeachPlanDto;
 import com.xuecheng.content.model.dto.TeachPlanDto;
+import com.xuecheng.content.model.po.TeachplanMedia;
 
 import java.util.List;
 
@@ -14,28 +16,36 @@ import java.util.List;
 public interface TeachPlanService {
 
     /**
-     * @description 查询课程计划树型结构
      * @param courseId 课程id
      * @return List<TeachPlanDto>
+     * @description 查询课程计划树型结构
      */
     public List<TeachPlanDto> findTeachPlanTree(Long courseId);
 
     /**
-     * @description 只在课程计划
      * @param saveTeachPlanDto 课程计划修改、新增的信息
+     * @description 只在课程计划
      */
     public void saveTeachPlan(SaveTeachPlanDto saveTeachPlanDto);
 
     /**
-     * @description 删除课程计划
      * @param teachPlanId 课程计划id
+     * @description 删除课程计划
      */
     public void deleteTeachPlan(Long teachPlanId);
 
     /**
-     * @description 根据移动类型上移或下移课程计划
-     * @param movement 移动类型
+     * @param movement    移动类型
      * @param teachPlanId 课程计划id
+     * @description 根据移动类型上移或下移课程计划
      */
     public void moveTeachPlan(String movement, Long teachPlanId);
+
+
+    /**
+     * @param bindTeachPlanMediaDto 课程计划和媒资绑定信息类
+     * @return com.xuecheng.content.model.po.TeachplanMedia
+     * @description 课程计划和媒资信息绑定
+     */
+    public TeachplanMedia associaitonMedia(BindTeachPlanMediaDto bindTeachPlanMediaDto);
 }

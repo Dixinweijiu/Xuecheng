@@ -1,5 +1,6 @@
 package com.xuecheng.content.api;
 
+import com.xuecheng.content.model.dto.BindTeachPlanMediaDto;
 import com.xuecheng.content.model.dto.SaveTeachPlanDto;
 import com.xuecheng.content.model.dto.TeachPlanDto;
 import com.xuecheng.content.service.TeachPlanService;
@@ -52,6 +53,12 @@ public class TeachPlanController {
     @PostMapping("/teachplan/{movement}/{teachPlanId}")
     public void moveTeachPlan(@PathVariable String movement, @PathVariable Long teachPlanId){
         teachPlanService.moveTeachPlan(movement, teachPlanId);
+    }
+
+    @ApiOperation(value = "课程计划和媒资信息绑定")
+    @PostMapping("/teachplan/association/media")
+    public void associaitonMedia(@RequestBody BindTeachPlanMediaDto bindTeachPlanMediaDto){
+        teachPlanService.associaitonMedia(bindTeachPlanMediaDto);
     }
 
 }
