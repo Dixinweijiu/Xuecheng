@@ -163,6 +163,11 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         }
         //从课程营销表查询
         CourseMarket courseMarket = courseMarketMapper.selectById(courseId);
+        if (courseMarket == null) {
+            courseMarket = new CourseMarket();
+            courseMarket.setId(courseBase.getId());
+            courseMarket.setCharge("201000");
+        }
         //组装在一起
         CourseBaseInfoDto courseBaseInfoDto = new CourseBaseInfoDto();
         BeanUtils.copyProperties(courseBase, courseBaseInfoDto);

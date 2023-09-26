@@ -60,7 +60,10 @@ public class TeachPlanServiceImpl implements TeachPlanService {
             teachplanMapper.updateById(teachplan);
         } else {
             //新增，需要确定order_by的值
-            int count = teachplanMapper.selectMaxOrderBy(saveTeachPlanDto.getCourseId(), saveTeachPlanDto.getParentid());
+            Integer count = teachplanMapper.selectMaxOrderBy(saveTeachPlanDto.getCourseId(), saveTeachPlanDto.getParentid());
+            if (count == null) {
+                count = 0;
+            }
             Teachplan teachplan = new Teachplan();
             teachplan.setOrderby(count + 1);
             BeanUtils.copyProperties(saveTeachPlanDto, teachplan);
@@ -158,7 +161,7 @@ public class TeachPlanServiceImpl implements TeachPlanService {
     public TeachplanMedia associaitonMedia(BindTeachPlanMediaDto bindTeachPlanMediaDto) {
 
         //先删除原有记录，根据课程计划id
-        Long teachPlanId = bindTeachPlanMediaDto.getTeachPlanId();
+        Long teachPlanId = bindTeachPlanMediaDto.getTeachplanId();
         Teachplan teachplan = teachplanMapper.selectById(teachPlanId);
         if(teachplan==null){
             XueChengPlusException.cast("教学计划不存在");
@@ -168,7 +171,7 @@ public class TeachPlanServiceImpl implements TeachPlanService {
             XueChengPlusException.cast("只允许第二级教学计划绑定媒资文件");
         }
         Long courseId = teachplan.getCourseId();
-        int delete = teachplanMediaMapper.delete(new LambdaQueryWrapper<TeachplanMedia>().eq(TeachplanMedia::getTeachplanId, bindTeachPlanMediaDto.getTeachPlanId()));
+        int delete = teachplanMediaMapper.delete(new LambdaQueryWrapper<TeachplanMedia>().eq(TeachplanMedia::getTeachplanId, bindTeachPlanMediaDto.getTeachplanId()));
 
         //再添加新的记录
         TeachplanMedia teachplanMedia = new TeachplanMedia();

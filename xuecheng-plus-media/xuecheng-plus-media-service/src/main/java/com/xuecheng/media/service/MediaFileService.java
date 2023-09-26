@@ -107,4 +107,11 @@ public interface MediaFileService {
      * @description 上传文件到Minio
      */
     public boolean addMediaFilesToMinio(String localFilePath, String bucket, String objectName, String mimeType);
+
+    /**
+     * @description 根据媒资id获取媒资对象
+     * @param mediaId 媒资id
+     * @return com.xuecheng.media.model.po.MediaFiles
+     */
+    public MediaFiles getFileById(String mediaId);
 }

@@ -21,6 +21,6 @@ public class BindTeachPlanMediaDto {
     private String fileName;
 
     @ApiModelProperty(value = "课程计划id", required = true)
-    private Long teachPlanId;
+    private Long teachplanId;
 
 }

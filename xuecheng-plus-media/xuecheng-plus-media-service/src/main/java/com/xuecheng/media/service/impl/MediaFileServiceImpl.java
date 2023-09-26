@@ -131,6 +131,17 @@ public class MediaFileServiceImpl implements MediaFileService {
     }
 
     /**
+     * @param mediaId 媒资id
+     * @return com.xuecheng.media.model.po.MediaFiles
+     * @description 根据媒资id获取媒资对象
+     */
+    @Override
+    public MediaFiles getFileById(String mediaId) {
+        MediaFiles mediaFiles = mediaFilesMapper.selectById(mediaId);
+        return mediaFiles;
+    }
+
+    /**
      * @return 存储文件夹路径
      * @description 根据当天日期得到桶内默认存储文件夹路径
      */

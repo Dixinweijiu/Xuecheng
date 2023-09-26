@@ -29,7 +29,7 @@ public interface TeachplanMapper extends BaseMapper<Teachplan> {
      * @param parentId 父节点id
      * @return 最大排序字段值
      */
-    public int selectMaxOrderBy(@Param("courseId") Long courseId, @Param("parentId") Long parentId);
+    public Integer selectMaxOrderBy(@Param("courseId") Long courseId, @Param("parentId") Long parentId);
 
     /**
      * @description 统计大章节计划下有小章节的数量
