@@ -202,7 +202,7 @@
                 <div class="article-cont-catalog">
                     <div class="article-left-box">
                         <div class="content">
-                            <#list model.getTeachplans>
+                            <#list model.teachplans>
                                 <#items as upperTeachPlan>
                                     <#if upperTeachPlan.parentid == 0>
                                         <div class="item">

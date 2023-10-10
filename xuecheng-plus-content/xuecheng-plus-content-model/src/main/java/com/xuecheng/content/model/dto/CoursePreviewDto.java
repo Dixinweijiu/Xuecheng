@@ -22,9 +22,6 @@ public class CoursePreviewDto {
     //课程计划信息
     List<TeachPlanDto> teachplans;
 
-    //课程营销信息
-//    CourseMarket courseMarket;
-
     //教师信息
     List<CourseTeacher> courseTeachers;
 

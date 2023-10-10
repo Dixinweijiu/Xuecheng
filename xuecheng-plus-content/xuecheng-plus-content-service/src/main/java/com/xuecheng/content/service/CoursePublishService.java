@@ -16,4 +16,20 @@ public interface CoursePublishService {
      * @description 获取课程预览信息
      */
     public CoursePreviewDto getCoursePreviewInfo(Long courseId);
+
+    /**
+     * @param companyId 机构id
+     * @param courseId  课程id
+     * @description 提交审核
+     */
+
+    public void commitAudit(Long companyId, Long courseId);
+
+
+    /**
+     * @param companyId 机构id
+     * @param courseId  课程id
+     * @description 发布课程
+     */
+    public void coursePublish(Long companyId, Long courseId);
 }
