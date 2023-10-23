@@ -22,6 +22,7 @@ import io.minio.messages.DeleteObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -233,7 +234,8 @@ public class MediaFileServiceImpl implements MediaFileService {
     }
 
     @Override
-    public UploadFileResultDto uploadFile(Long companyId, UploadFileParamsDto uploadFileParamsDto, String localFilePath) {
+    public UploadFileResultDto uploadFile(Long companyId, UploadFileParamsDto uploadFileParamsDto, String localFilePath,
+                                          String objectName) {
 
         //得到文件名
         String fileName = uploadFileParamsDto.getFilename();
@@ -245,7 +247,10 @@ public class MediaFileServiceImpl implements MediaFileService {
         String defaultFolderPath = getDefaultFolderPath();
         //得到md5值作为对象名，和路径进行拼接
         String fileMd5 = getFileMd5(new File(localFilePath));
-        String objectName = defaultFolderPath + fileMd5 + extension;
+        //获取存储的对象名
+        if (StringUtils.isEmpty(objectName)){
+            objectName = defaultFolderPath + fileMd5 + extension;
+        }
         //将文件上传到minio
         boolean result = addMediaFilesToMinio(localFilePath, bucket_mediaFiles, objectName, mimeType);
         if (!result) {
