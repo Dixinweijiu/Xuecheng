@@ -1,8 +1,12 @@
 package com.xuecheng.content.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.xuecheng.base.exception.CommonError;
 import com.xuecheng.base.exception.XueChengPlusException;
-import com.xuecheng.content.mapper.*;
+import com.xuecheng.content.mapper.CourseBaseMapper;
+import com.xuecheng.content.mapper.CourseMarketMapper;
+import com.xuecheng.content.mapper.CoursePublishMapper;
+import com.xuecheng.content.mapper.CoursePublishPreMapper;
 import com.xuecheng.content.model.dto.CourseBaseInfoDto;
 import com.xuecheng.content.model.dto.CoursePreviewDto;
 import com.xuecheng.content.model.dto.TeachPlanDto;
@@ -11,6 +15,8 @@ import com.xuecheng.content.service.CourseBaseInfoService;
 import com.xuecheng.content.service.CoursePublishService;
 import com.xuecheng.content.service.CourseTeacherService;
 import com.xuecheng.content.service.TeachPlanService;
+import com.xuecheng.messagesdk.model.po.MqMessage;
+import com.xuecheng.messagesdk.service.MqMessageService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -42,6 +48,9 @@ public class CoursePublishServiceImpl implements CoursePublishService {
     CourseTeacherService courseTeacherService;
 
     @Autowired
+    MqMessageService mqMessageService;
+
+    @Autowired
     CourseMarketMapper courseMarketMapper;
 
     @Autowired
@@ -53,8 +62,6 @@ public class CoursePublishServiceImpl implements CoursePublishService {
     @Autowired
     CourseBaseMapper courseBaseMapper;
 
-    @Autowired
-    MqMessageMapper mqMessageMapper;
 
     /**
      * @param courseId 课程id
@@ -213,10 +220,15 @@ public class CoursePublishServiceImpl implements CoursePublishService {
         }
     }
 
-
+    /**
+     * @description 向消息表写课程发表信息
+     * @param courseId 课程id
+     */
     private void saveCoursePublishMessage(Long courseId) {
-//        MqMessage mqMessage = new MqMessage();
-//        mqMessageMapper.insert(mqMessage);
+        MqMessage coursePublish = mqMessageService.addMessage("course_publish", String.valueOf(courseId), null, null);
+        if (coursePublish == null) {
+            XueChengPlusException.cast(CommonError.UNKOWN_ERROR);
+        }
     }
 
 
