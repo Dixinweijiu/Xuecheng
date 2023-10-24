@@ -1,12 +1,16 @@
 package com.xuecheng.content.service.jobHandler;
 
+import com.xuecheng.content.service.CoursePublishService;
 import com.xuecheng.messagesdk.model.po.MqMessage;
 import com.xuecheng.messagesdk.service.MessageProcessAbstract;
 import com.xuecheng.messagesdk.service.MqMessageService;
 import com.xxl.job.core.context.XxlJobHelper;
 import com.xxl.job.core.handler.annotation.XxlJob;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.io.File;
 
 /**
  * @author jxchen
@@ -17,6 +21,9 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class CoursePublishTask extends MessageProcessAbstract {
+
+    @Autowired
+    CoursePublishService coursePublishService;
 
     //任务调度入口
     @XxlJob("CoursePublishJobHandler")
@@ -47,9 +54,9 @@ public class CoursePublishTask extends MessageProcessAbstract {
         //向elasticsearch写索引
         saveCourseIndex(mqMessage, courseId);
         //向redis写缓存
-
+        saveCourseCache(mqMessage, courseId);
         //返回true表示任务完成
-        return false;
+        return true;
     }
 
     /**
@@ -58,8 +65,10 @@ public class CoursePublishTask extends MessageProcessAbstract {
      * @param courseId 课程id
      */
     private void generateCourseHtml(MqMessage mqMessage, long courseId){
+        log.debug("开始进行课程静态化,课程id:{}",courseId);
         //消息id
         Long taskId = mqMessage.getId();
+        //消息处理的service
         MqMessageService mqMessageService = this.getMqMessageService();
         //做任务幂等性处理
         //取出该阶段执行状态
@@ -70,7 +79,12 @@ public class CoursePublishTask extends MessageProcessAbstract {
             return;
         }
         //开始处理
-
+        //生成静态化页面
+        File file = coursePublishService.generateCourseHtml(courseId);
+        //上传静态化页面
+        if (file != null) {
+            coursePublishService.uploadCourseHtml(courseId, file);
+        }
         //任务处理完成，将任务状态写为完成
         mqMessageService.completedStageOne(taskId);
 
