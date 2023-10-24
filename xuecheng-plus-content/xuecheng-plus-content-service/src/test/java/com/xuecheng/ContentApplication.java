@@ -12,7 +12,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  */
 
 @SpringBootApplication
-@EnableFeignClients(basePackages={"com.xuecheng.content.feignClient"})
+@EnableFeignClients(basePackages={"com.xuecheng.content.feignclient"})
 public class ContentApplication {
     public static void main(String[] args) {
         SpringApplication.run(ContentApplication.class, args);
